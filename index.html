@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#070A12" />
+  <title>Akaora Meet</title>
+  <link rel="icon" href="assets/logo.png" />
+  <link rel="apple-touch-icon" href="assets/logo.png" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="ambient ambient-one"></div>
+  <div class="ambient ambient-two"></div>
+  <div class="ambient ambient-three"></div>
+
+  <main class="app-shell">
+    <header class="topbar glass-soft">
+      <a class="brand" href="./" aria-label="Akaora Meet home">
+        <img src="assets/logo.png" alt="Akaora Meet logo" class="brand-logo" />
+        <span>
+          <strong>Akaora Meet</strong>
+          <small>No-login browser meetings</small>
+        </span>
+      </a>
+      <div class="status-chip" id="appStatus"><span></span> Starting</div>
+    </header>
+
+    <section id="homeView" class="view active home-view">
+      <div class="hero-card glass-card reveal-up">
+        <div class="hero-copy">
+          <p class="eyebrow">Akaora browser meeting app</p>
+          <h1>Simple meetings, directly in your browser.</h1>
+          <p class="hero-text">Create a private room, share the link, chat with emojis, and start camera or mic only when you want.</p>
+        </div>
+        <div class="hero-device" aria-hidden="true">
+          <div class="device-top"></div>
+          <div class="device-screen">
+            <img src="assets/logo.png" alt="" />
+            <div class="mini-waves"><i></i><i></i><i></i></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="choice-grid reveal-up delay-1">
+        <button class="choice-card glass-card" id="openCreateBtn">
+          <span class="choice-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+          </span>
+          <strong>Create a new meeting</strong>
+          <small>Generate a unique room and enter the call screen.</small>
+        </button>
+        <button class="choice-card glass-card" id="openJoinBtn">
+          <span class="choice-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/><path d="M3 12h12"/><path d="M15 5h3a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3h-3"/></svg>
+          </span>
+          <strong>Join the meeting</strong>
+          <small>Paste a room code or invite link.</small>
+        </button>
+      </div>
+    </section>
+
+    <section id="createView" class="view form-view">
+      <button class="back-btn" data-back-home>
+        <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+        Back
+      </button>
+      <div class="form-card glass-card reveal-up">
+        <div class="form-heading">
+          <p class="eyebrow">Create meeting</p>
+          <h2>Enter your name first</h2>
+          <p>The create button will unlock after your name is added. Camera and mic are optional.</p>
+        </div>
+
+        <div class="field-group">
+          <label for="createNameInput">Your name</label>
+          <input id="createNameInput" type="text" maxlength="32" autocomplete="name" placeholder="Enter your name" />
+        </div>
+
+        <div class="generated-room glass-soft">
+          <span>Generated room code</span>
+          <strong id="generatedRoomCode">------</strong>
+          <button id="regenerateCodeBtn" class="mini-btn" type="button">
+            <svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v6h-6"/></svg>
+            New code
+          </button>
+        </div>
+
+        <div class="media-options">
+          <button class="toggle-pill" id="createMicToggle" data-enabled="false" type="button">
+            <svg viewBox="0 0 24 24"><path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v5a3 3 0 0 0 3 3Z"/><path d="M19 11a7 7 0 0 1-14 0"/><path d="M12 18v4"/><path d="M8 22h8"/></svg>
+            <span>Mic off</span>
+          </button>
+          <button class="toggle-pill" id="createCameraToggle" data-enabled="false" type="button">
+            <svg viewBox="0 0 24 24"><path d="M4 7a3 3 0 0 1 3-3h7a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3Z"/><path d="M17 9l4-2v10l-4-2"/></svg>
+            <span>Camera off</span>
+          </button>
+        </div>
+
+        <button id="createNowBtn" class="primary-action" disabled>
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+          Create Meeting Now
+        </button>
+      </div>
+    </section>
+
+    <section id="joinView" class="view form-view">
+      <button class="back-btn" data-back-home>
+        <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+        Back
+      </button>
+      <div class="form-card glass-card reveal-up">
+        <div class="form-heading">
+          <p class="eyebrow">Join meeting</p>
+          <h2>Enter room details</h2>
+          <p>Use the room code or paste the full invite link. Invalid rooms will show a clear error.</p>
+        </div>
+
+        <div id="invalidRoomAlert" class="error-card" hidden>
+          <strong>Invalid Room Code</strong>
+          <span>The room code you entered is invalid. Please check the room code and try again.</span>
+        </div>
+
+        <div class="field-group">
+          <label for="joinNameInput">Your name</label>
+          <input id="joinNameInput" type="text" maxlength="32" autocomplete="name" placeholder="Enter your name" />
+        </div>
+
+        <div class="field-group">
+          <label for="roomCodeInput">Room code or invite link</label>
+          <input id="roomCodeInput" type="text" inputmode="text" autocomplete="off" placeholder="Example: AKR8H2KQ or paste invite link" />
+        </div>
+
+        <div class="media-options">
+          <button class="toggle-pill" id="joinMicToggle" data-enabled="false" type="button">
+            <svg viewBox="0 0 24 24"><path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v5a3 3 0 0 0 3 3Z"/><path d="M19 11a7 7 0 0 1-14 0"/><path d="M12 18v4"/><path d="M8 22h8"/></svg>
+            <span>Mic off</span>
+          </button>
+          <button class="toggle-pill" id="joinCameraToggle" data-enabled="false" type="button">
+            <svg viewBox="0 0 24 24"><path d="M4 7a3 3 0 0 1 3-3h7a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3Z"/><path d="M17 9l4-2v10l-4-2"/></svg>
+            <span>Camera off</span>
+          </button>
+        </div>
+
+        <button id="joinNowBtn" class="primary-action" disabled>
+          <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/><path d="M3 12h12"/></svg>
+          Join Meeting Now
+        </button>
+      </div>
+    </section>
+
+    <section id="meetingView" class="view meeting-view">
+      <div class="meeting-top glass-soft">
+        <div class="room-meta">
+          <img src="assets/logo.png" alt="Akaora logo" />
+          <div>
+            <span>Room Code</span>
+            <strong id="activeRoomCode">------</strong>
+          </div>
+        </div>
+        <div class="share-actions">
+          <button class="mini-btn" id="copyCodeBtn">
+            <svg viewBox="0 0 24 24"><path d="M9 9h10v10H9z"/><path d="M5 15H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v1"/></svg>
+            Copy code
+          </button>
+          <button class="mini-btn" id="copyInviteBtn">
+            <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+            Share link
+          </button>
+        </div>
+      </div>
+
+      <div class="call-layout">
+        <section class="stage glass-card">
+          <div class="video-grid" id="videoGrid">
+            <article class="video-tile remote-tile">
+              <video id="remoteVideo" autoplay playsinline></video>
+              <div class="avatar-placeholder" id="remotePlaceholder">
+                <div class="avatar-circle">A</div>
+                <p id="remoteLabel">Waiting for guest...</p>
+              </div>
+              <div class="tile-badge">
+                <svg viewBox="0 0 24 24"><path d="M4 7a3 3 0 0 1 3-3h7a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3Z"/><path d="M17 9l4-2v10l-4-2"/></svg>
+                <span>Remote</span>
+              </div>
+            </article>
+            <article class="video-tile local-tile">
+              <video id="localVideo" autoplay muted playsinline></video>
+              <div class="avatar-placeholder" id="localPlaceholder">
+                <div class="avatar-circle" id="localInitial">Y</div>
+                <p id="localLabel">You</p>
+              </div>
+              <div class="tile-badge">
+                <svg viewBox="0 0 24 24"><path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v5a3 3 0 0 0 3 3Z"/><path d="M19 11a7 7 0 0 1-14 0"/><path d="M12 18v4"/><path d="M8 22h8"/></svg>
+                <span id="localMediaState">Mic off • Camera off</span>
+              </div>
+            </article>
+          </div>
+
+          <div class="call-controls glass-soft">
+            <button class="control-btn off" id="micBtn" title="Turn microphone on/off">
+              <svg viewBox="0 0 24 24"><path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v5a3 3 0 0 0 3 3Z"/><path d="M19 11a7 7 0 0 1-14 0"/><path d="M12 18v4"/><path d="M8 22h8"/></svg>
+              <span>Mic</span>
+            </button>
+            <button class="control-btn off" id="cameraBtn" title="Turn camera on/off">
+              <svg viewBox="0 0 24 24"><path d="M4 7a3 3 0 0 1 3-3h7a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3Z"/><path d="M17 9l4-2v10l-4-2"/></svg>
+              <span>Camera</span>
+            </button>
+            <button class="control-btn" id="screenBtn" title="Share screen">
+              <svg viewBox="0 0 24 24"><path d="M3 5h18v12H3z"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>
+              <span>Screen</span>
+            </button>
+            <button class="control-btn" id="chatToggleBtn" title="Open chat">
+              <svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-8 8H6l-4 3 1.3-5.2A8 8 0 1 1 21 12Z"/></svg>
+              <span>Chat</span>
+            </button>
+            <button class="control-btn danger" id="hangupBtn" title="Hang up">
+              <svg viewBox="0 0 24 24"><path d="M4 14c4-4 12-4 16 0l-3 3-4-2v-3h-2v3l-4 2-3-3Z"/></svg>
+              <span>Leave</span>
+            </button>
+          </div>
+        </section>
+
+        <aside class="chat-drawer glass-card" id="chatDrawer">
+          <div class="chat-head">
+            <div>
+              <strong>Live chat</strong>
+              <small>Firebase real-time chat</small>
+            </div>
+            <button class="icon-only" id="closeChatBtn" aria-label="Close chat">
+              <svg viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+          </div>
+          <div class="chat-messages" id="chatMessages"></div>
+          <div class="emoji-row" id="emojiRow" hidden>
+            <button>😀</button><button>😂</button><button>😍</button><button>👍</button><button>👏</button><button>🔥</button><button>🎉</button><button>❤️</button><button>🙏</button><button>✅</button><button>💡</button><button>😎</button>
+          </div>
+          <div class="chat-input-wrap">
+            <button class="emoji-btn" id="emojiBtn" aria-label="Open emoji picker">😊</button>
+            <input id="chatInput" type="text" maxlength="500" placeholder="Type a message..." />
+            <button class="send-btn" id="sendChatBtn" aria-label="Send message">
+              <svg viewBox="0 0 24 24"><path d="M22 2 11 13"/><path d="m22 2-7 20-4-9-9-4 20-7Z"/></svg>
+            </button>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
